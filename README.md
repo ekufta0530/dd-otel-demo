@@ -1,10 +1,13 @@
 # OpenTelemetry Collector Demo
 
-*IMPORTANT:* This is a pre-released version of the OpenTelemetry Collector Contrib.
-
 This demo contains a client and server applications that use the
 opentelemetry Go library for instrumentation and for sending telemetry data
-to the opentelemetry collector.
+to the opentelemetry collector. The otel collector is configured with the 
+Datadog exporter. This is a WIP. The next challenge is connecting traces to logs. 
+
+To send these traces to Datadog, make sure you have a file named sandbox.docker.env 
+in your local ~/ directory. At minimum, it should contain your API Key in the following format
+`DD_API_KEY=<YOUR_DATADOG_SANDBOX_ORG_API_KEY_HERE>`
 
 The client periodically makes http calls to the server which
 create client spans, server spans and metrics that track information like
@@ -13,41 +16,19 @@ number of http requests and latency.
 This demo presents the typical flow of observability data with multiple
 OpenTelemetry Collectors deployed:
 
-![](demo-arch.png)
-
 - The client and server send data directly to the OTel Collector;
 - The OTel Collector then sends the data to the appropriate backend, in this demo
- Jaeger, Zipkin, and Prometheus;
+ Datadog;
 
-This demo uses `docker-compose` and by default runs against the
-`otel/opentelemetry-collector:0.67.0` image. To run the demo, switch
-to the `examples/demo` folder and run:
+This demo uses `docker-compose` so to get it running, make sure you have 
+docker compose installed and run the following command:
 
 ```shell
 docker-compose up -d
 ```
 
-The demo exposes the following backends:
-
-- Jaeger at http://0.0.0.0:16686
-- Zipkin at http://0.0.0.0:9411
-- Prometheus at http://0.0.0.0:9090
-
 Notes:
 
-- It may take some time for the application metrics to appear on the Prometheus
- dashboard;
+- It may take some time for containers to start. This is a WIP but it works as is with a bit of patience.
 
-To clean up any docker container from the demo run `docker-compose down` from
-the `examples/demo` folder.
-
-### Using a Locally Built Image
-Developers interested in running a local build of the Collector need to build a
-docker image using the command below:
-
-```shell
-make docker-otelcontribcol
-```
-
-And set an environment variable `OTELCOL_IMG` to `otelcontribcol` before
-launching the command `docker-compose up -d`.
+To clean up any docker container from the demo run `docker-compose down`
